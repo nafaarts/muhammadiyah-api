@@ -13,7 +13,7 @@ class StaffController extends Controller
 {
     public function index()
     {
-        $staff = Staff::latest()->get();
+        $staff = Staff::get();
         $data = collect($staff)->map(function ($item) {
             return collect($item)->merge(['gambar' => env('BASE_URL') . 'img/staff/' . $item->gambar]);
         });
