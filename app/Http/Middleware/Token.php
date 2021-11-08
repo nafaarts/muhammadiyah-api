@@ -11,8 +11,10 @@ class Token
 
         $token = env('TOKEN');
 
-        if (explode(' ', $request->header('Authorization'))[1] == $token) {
-            return $next($request);
+        if ($request->header('Authorization')) {
+            if (explode(' ', $request->header('Authorization'))[1] == $token) {
+                return $next($request);
+            }
         }
         return response('Unauthorized.', 401);
     }
