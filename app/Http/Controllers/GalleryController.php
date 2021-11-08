@@ -42,11 +42,15 @@ class GalleryController extends Controller
         }
 
         if ($request->hasFile('gambar')) {
-            $file = $request->file('gambar')->getClientOriginalName();
-            $filename = pathinfo($file, PATHINFO_FILENAME);
-            $extension = pathinfo($file, PATHINFO_EXTENSION);
-            $name = Str::slug($filename) . '-' . time() . '.' . $extension;
-            $request->file('gambar')->move('img/gallery/', $name);
+            try {
+                $file = $request->file('gambar')->getClientOriginalName();
+                $filename = pathinfo($file, PATHINFO_FILENAME);
+                $extension = pathinfo($file, PATHINFO_EXTENSION);
+                $name = Str::slug($filename) . '-' . time() . '.' . $extension;
+                $request->file('gambar')->move('img/gallery/', $name);
+            } catch (\Throwable $err) {
+                return $err;
+            }
         }
 
         $gallery = Gallery::create([
