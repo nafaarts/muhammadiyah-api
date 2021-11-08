@@ -14,11 +14,14 @@ class StaffController extends Controller
     public function index()
     {
         $staff = Staff::latest()->get();
+        $data = collect($staff)->map(function ($item) {
+            return collect($item)->merge(['gambar' => env('BASE_URL') . 'staff/' . $item->gambar]);
+        });
         return response([
             'success' => true,
             'message' => 'Staff list',
             'count' => $staff->count(),
-            'data'   => $staff
+            'data'   => $data
         ], 200);
     }
 
