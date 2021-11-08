@@ -7,7 +7,7 @@
 // });
 
 
-$router->group(['prefix' => 'api'], function () use ($router) {
+$router->group(['middleware' => 'token'], function () use ($router) {
     $router->get('informasi', 'InformasiController@index');
     $router->post('informasi', 'InformasiController@store');
     $router->get('informasi/{slug}', 'InformasiController@show');

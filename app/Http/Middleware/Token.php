@@ -8,9 +8,10 @@ class Token
 {
     public function handle($request, Closure $next)
     {
+
         $token = env('TOKEN');
 
-        if ($request->header('TOKEN') == $token) {
+        if (explode(' ', $request->header('Authorization'))[1] == $token) {
             return $next($request);
         }
         return response('Unauthorized.', 401);
