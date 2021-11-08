@@ -15,7 +15,7 @@ class StaffController extends Controller
     {
         $staff = Staff::latest()->get();
         $data = collect($staff)->map(function ($item) {
-            return collect($item)->merge(['gambar' => env('BASE_URL') . 'staff/' . $item->gambar]);
+            return collect($item)->merge(['gambar' => env('BASE_URL') . 'img/staff/' . $item->gambar]);
         });
         return response([
             'success' => true,
