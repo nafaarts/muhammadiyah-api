@@ -18,7 +18,8 @@ class GalleryController extends Controller
             return collect($item)->merge(['gambar' => env('BASE_URL') . 'img/gallery/' . $item->gambar]);
         });
         $headers = [
-            'Access-Control-Allow-Origin' => '*'
+            'Access-Control-Allow-Origin' => '*',
+            'Access-Control-Allow-Headers' => '*'
         ];
         return response([
             'success' => true,
