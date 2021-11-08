@@ -2,13 +2,9 @@
 
 /** @var \Laravel\Lumen\Routing\Router $router */
 
-use Illuminate\Http\Client\Request;
-
-use function PHPUnit\Framework\isEmpty;
-
-$router->get('/', function () use ($router) {
-    return $router->app->version();
-});
+// $router->get('/', function () use ($router) {
+//     return $router->app->version();
+// });
 
 
 $router->group(['middleware' => 'token'], function () use ($router) {
