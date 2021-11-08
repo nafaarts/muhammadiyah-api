@@ -17,12 +17,15 @@ class GalleryController extends Controller
         $data = collect($gallery)->map(function ($item) {
             return collect($item)->merge(['gambar' => env('BASE_URL') . 'img/gallery/' . $item->gambar]);
         });
+        $headers = [
+            'Access-Control-Allow-Origin' => '*'
+        ];
         return response([
             'success' => true,
             'message' => 'Gallery list',
             'count' => $gallery->count(),
             'data'   => $data
-        ], 200);
+        ], 200, $headers);
     }
 
     public function store(Request $request)
