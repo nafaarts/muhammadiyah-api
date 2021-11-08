@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Donasi;
 use App\Models\DonasiKategori;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -15,7 +16,11 @@ class DonasiController extends Controller
     {
         $donasi = Donasi::latest()->get();
         $data = collect($donasi)->map(function ($item, $key) {
-            return collect($item)->merge(['kategori' => DonasiKategori::findOrFail($item->kategori)]);
+            return collect($item)->merge([
+                'kategori' => DonasiKategori::findOrFail($item->kategori),
+                'gambar' => env('BASE_URL') . 'img/donasi/' . $item->gambar,
+                'created_at' => Carbon::parse($item->created_at)->diffForHumans()
+            ]);
         });
         return response([
             'success' => true,
@@ -69,7 +74,11 @@ class DonasiController extends Controller
     public function show($id)
     {
         $donasi = Donasi::findOrFail($id);
-        $data = collect($donasi)->merge(['kategori' => DonasiKategori::findOrFail($donasi->kategori)]);
+        $data = collect($donasi)->merge([
+            'kategori' => DonasiKategori::findOrFail($donasi->kategori),
+            'gambar' => env('BASE_URL') . 'img/donasi/' . $donasi->gambar,
+            'created_at' => Carbon::parse($donasi->created_at)->diffForHumans()
+        ]);
         return response([
             'success' => true,
             'message' => 'Show Donation',
@@ -119,7 +128,11 @@ class DonasiController extends Controller
             'slug' => Str::slug($request->judul)
         ]);
 
-        $data = collect($donasi)->merge(['kategori' => DonasiKategori::findOrFail($donasi->kategori)]);
+        $data = collect($donasi)->merge([
+            'kategori' => DonasiKategori::findOrFail($donasi->kategori),
+            'gambar' => env('BASE_URL') . 'img/donasi/' . $donasi->gambar,
+            'created_at' => Carbon::parse($donasi->created_at)->diffForHumans()
+        ]);
 
         return response([
             'success' => true,
