@@ -30,7 +30,7 @@ class GalleryController extends Controller
     {
         $validation = Validator::make($request->all(), [
             'deskripsi' => 'required',
-            'gambar' => 'required|max:5048|mimes:jpg,png,jpeg|image'
+            'gambar' => 'required|max:10240|mimes:jpg,png,jpeg|image'
         ]);
 
         if ($validation->fails()) {

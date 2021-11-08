@@ -36,7 +36,7 @@ class DonasiController extends Controller
             'judul' => 'required|unique:informasi',
             'target' => 'required|integer',
             'kategori' => 'required|exists:donasi_kategori,id|integer',
-            'gambar' => 'required|max:5048|mimes:jpg,png,jpeg|image'
+            'gambar' => 'required|max:10240|mimes:jpg,png,jpeg|image'
         ]);
 
         if ($validation->fails()) {
