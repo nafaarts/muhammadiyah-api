@@ -73,12 +73,13 @@ $app->configure('app');
 */
 
 $app->middleware([
-    App\Http\Middleware\CorsMiddleware::class
+    // App\Http\Middleware\CorsMiddleware::class
 ]);
 
 $app->routeMiddleware([
     // 'auth' => App\Http\Middleware\Authenticate::class,
-    'token' => App\Http\Middleware\Token::class
+    'token' => App\Http\Middleware\Token::class,
+    'cors' => App\Http\Middleware\CorsMiddleware::class
 ]);
 
 /*
@@ -95,8 +96,8 @@ $app->routeMiddleware([
 $app->register(App\Providers\AppServiceProvider::class);
 $app->register(App\Providers\AuthServiceProvider::class);
 $app->register(App\Providers\EventServiceProvider::class);
-$app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
 $app->register(App\Providers\CatchAllOptionsRequestsProvider::class);
+$app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes
