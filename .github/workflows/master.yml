@@ -14,8 +14,6 @@ jobs:
 
       - name: Dependencies Install
       - uses: php-actions/composer@v6
-        run: |
-          composer install
 
       - name: 📂 Sync files
         uses: SamKirkland/FTP-Deploy-Action@4.1.0
