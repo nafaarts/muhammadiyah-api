@@ -2,9 +2,9 @@
 
 /** @var \Laravel\Lumen\Routing\Router $router */
 
-// $router->get('/', function () use ($router) {
-//     return $router->app->version();
-// });
+$router->get('/', function () use ($router) {
+    return response('', 404);
+});
 
 
 $router->group(['middleware' => 'token'], function () use ($router) {
@@ -50,16 +50,3 @@ $router->group(['middleware' => 'token'], function () use ($router) {
     $router->put('donatur/{id}', 'DonaturController@update');
     $router->delete('donatur/{id}', 'DonaturController@destroy');
 });
-
-// $router->get('test', function () use ($router) {
-//     return response(['msg' => 'Hello'], 200);
-// });
-
-// $router->post('test/{id}', function ($id) use ($router) {
-//     // if ($request == null) return response(["msg" => "cannot empty!"], 403);
-//     return response(["test" => "Hello", "id" => $id], 200);
-// });
-
-// $router->get('example', 'ExampleController@index');
-
-// $router->get('hoo', 'TestController@index');

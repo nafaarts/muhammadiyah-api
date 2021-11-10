@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Gallery;
+use Gumlet\ImageResize;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
@@ -11,11 +12,22 @@ use Illuminate\Support\Str;
 
 class GalleryController extends Controller
 {
+    private function resizeImage($filename, $size, $output)
+    {
+        $image = new ImageResize($filename);
+        $image->resizeToWidth($size, true);
+        $image->save($output, IMAGETYPE_JPEG);
+    }
+
     public function index()
     {
         $gallery = Gallery::latest()->get();
         $data = collect($gallery)->map(function ($item) {
-            return collect($item)->merge(['gambar' => env('BASE_URL') . 'img/gallery/' . $item->gambar]);
+            return collect($item)->merge(['gambar' => [
+                'original' => env('BASE_URL') . 'img/gallery/' . $item->gambar,
+                'medium' => env('BASE_URL') . 'img/gallery/medium/' . $item->gambar,
+                'thumbnail' => env('BASE_URL') . 'img/gallery/thumbnail/' . $item->gambar
+            ]]);
         });
 
         return response([
@@ -47,7 +59,10 @@ class GalleryController extends Controller
                 $filename = pathinfo($file, PATHINFO_FILENAME);
                 $extension = pathinfo($file, PATHINFO_EXTENSION);
                 $name = Str::slug($filename) . '-' . time() . '.' . $extension;
-                $request->file('gambar')->move('img/gallery/', $name);
+                $path = 'img/gallery/';
+                $request->file('gambar')->move($path, $name);
+                $this->resizeImage($path . $name, 150, $path . 'thumbnail/' . $name);
+                $this->resizeImage($path . $name, 400, $path . 'medium/' . $name);
             } catch (\Throwable $err) {
                 return $err;
             }
@@ -58,10 +73,16 @@ class GalleryController extends Controller
             'gambar' => $name,
         ]);
 
+        $data = collect($gallery)->merge(['gambar' => [
+            'original' => env('BASE_URL') . 'img/gallery/' . $gallery->gambar,
+            'medium' => env('BASE_URL') . 'img/gallery/medium/' . $gallery->gambar,
+            'thumbnail' => env('BASE_URL') . 'img/gallery/thumbnail/' . $gallery->gambar
+        ]]);
+
         return response([
             'success' => true,
             'message' => 'Gallery has been added!',
-            'data'   => $gallery
+            'data'   => $data
         ], 200);
     }
 
@@ -109,16 +130,25 @@ class GalleryController extends Controller
             'gambar' => $name,
         ]);
 
+        $data = collect($gallery)->merge(['gambar' => [
+            'original' => env('BASE_URL') . 'img/gallery/' . $gallery->gambar,
+            'medium' => env('BASE_URL') . 'img/gallery/medium/' . $gallery->gambar,
+            'thumbnail' => env('BASE_URL') . 'img/gallery/thumbnail/' . $gallery->gambar
+        ]]);
+
         return response([
             'success' => true,
             'message' => 'Gallery has been updated!',
-            'data'   => $gallery
+            'data'   => $data
         ], 200);
     }
 
     public function destroy($id)
     {
         $gallery = Gallery::findOrFail($id);
+        File::delete('img/gallery/' . $gallery->gambar);
+        File::delete('img/gallery/medium/' . $gallery->gambar);
+        File::delete('img/gallery/thumbnail/' . $gallery->gambar);
         $gallery->delete();
         return response([
             'success' => true,
