@@ -12,8 +12,13 @@ jobs:
       - name: 🚚 Get latest code
         uses: actions/checkout@v2
 
-      - name: Install dependencies
-        uses: php-actions/composer@v6
+      - name: Install Composer Dependencies
+        run: composer install --no-ansi --no-interaction --no-scripts --no-suggest --no-progress --prefer-dist
+
+      - name: Create zipped vendor directory
+        uses: montudor/action-zip@v0.1.0
+        with:
+          args: zip -qq -r ./vendor.zip ./vendor
 
       - name: 📂 Sync files
         uses: SamKirkland/FTP-Deploy-Action@4.1.0
