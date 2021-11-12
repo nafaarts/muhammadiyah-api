@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Informasi;
+use App\Models\Kategori;
 use Gumlet\ImageResize;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
@@ -25,11 +26,14 @@ class InformasiController extends Controller
             $informasi = Informasi::latest()->paginate($request->get('limit'));
         }
         $data = collect($informasi)->map(function ($item) {
-            return collect($item)->merge(['gambar' => [
-                'original' => env('BASE_URL') . 'img/informasi/' . $item->gambar,
-                'medium' => env('BASE_URL') . 'img/informasi/medium/' . $item->gambar,
-                'thumbnail' => env('BASE_URL') . 'img/informasi/thumbnail/' . $item->gambar
-            ]]);
+            return collect($item)->merge([
+                'gambar' => [
+                    'original' => env('BASE_URL') . 'img/informasi/' . $item->gambar,
+                    'medium' => env('BASE_URL') . 'img/informasi/medium/' . $item->gambar,
+                    'thumbnail' => env('BASE_URL') . 'img/informasi/thumbnail/' . $item->gambar
+                ],
+                'category' => Kategori::findOrFail($item->kategori)
+            ]);
         });
         return response([
             'success' => true,
@@ -88,11 +92,14 @@ class InformasiController extends Controller
     public function show($slug)
     {
         $informasi = Informasi::where('slug', $slug)->get()->first();
-        $data = collect($informasi)->merge(['gambar' => [
-            'original' => env('BASE_URL') . 'img/informasi/' . $informasi->gambar,
-            'medium' => env('BASE_URL') . 'img/informasi/medium/' . $informasi->gambar,
-            'thumbnail' => env('BASE_URL') . 'img/informasi/thumbnail/' . $informasi->gambar
-        ]]);
+        $data = collect($informasi)->merge([
+            'gambar' => [
+                'original' => env('BASE_URL') . 'img/informasi/' . $informasi->gambar,
+                'medium' => env('BASE_URL') . 'img/informasi/medium/' . $informasi->gambar,
+                'thumbnail' => env('BASE_URL') . 'img/informasi/thumbnail/' . $informasi->gambar
+            ],
+            'category' => Kategori::findOrFail($informasi->kategori)
+        ]);
         return response([
             'success' => true,
             'message' => 'Show Informasi',
