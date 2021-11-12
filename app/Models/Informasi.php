@@ -8,7 +8,7 @@ class Informasi extends Model
 {
     protected $table = 'informasi';
     protected $fillable = [
-        'judul', 'slug', 'deskripsi', 'isi', 'gambar', 'views'
+        'judul', 'slug', 'deskripsi', 'isi', 'gambar', 'views', 'katogori'
     ];
 
     function kategori()
