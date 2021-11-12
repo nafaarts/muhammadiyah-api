@@ -154,9 +154,9 @@ class InformasiController extends Controller
     public function destroy($id)
     {
         $informasi = Informasi::findOrFail($id);
-        File::delete('img/' . $informasi->gambar);
-        File::delete('img/thumbnail/' . $informasi->gambar);
-        File::delete('img/medium/' . $informasi->gambar);
+        File::delete('img/informasi/' . $informasi->gambar);
+        File::delete('img/informasi/thumbnail/' . $informasi->gambar);
+        File::delete('img/informasi/medium/' . $informasi->gambar);
 
         $informasi->delete();
         return response([
