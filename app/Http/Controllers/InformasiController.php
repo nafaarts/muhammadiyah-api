@@ -16,11 +16,14 @@ class InformasiController extends Controller
         if ($request->get('page')) {
             $informasi = Informasi::latest()->paginate($request->get('limit'));
         }
+        $data = collect($informasi)->map(function ($item) {
+            return collect($item)->merge(['gambar' => env('BASE_URL') . 'img/informasi/' . $item->gambar]);
+        });
         return response([
             'success' => true,
             'message' => 'Information list',
             'count' => $informasi->count(),
-            'data'   => $informasi
+            'data'   => $data
         ], 200);
     }
 
@@ -70,10 +73,11 @@ class InformasiController extends Controller
     public function show($slug)
     {
         $informasi = Informasi::where('slug', $slug)->get()->first();
+        $data = collect($informasi)->merge(['gambar' => env('BASE_URL') . '/img/informasi/' . $informasi->gambar]);
         return response([
             'success' => true,
             'message' => 'Show Informasi',
-            'data'   => $informasi
+            'data'   => $data
         ], 200);
     }
 
