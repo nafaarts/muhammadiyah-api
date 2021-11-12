@@ -25,7 +25,11 @@ class InformasiController extends Controller
             $informasi = Informasi::latest()->paginate($request->get('limit'));
         }
         $data = collect($informasi)->map(function ($item) {
-            return collect($item)->merge(['gambar' => env('BASE_URL') . 'img/informasi/' . $item->gambar]);
+            return collect($item)->merge(['gambar' => [
+                'original' => env('BASE_URL') . 'img/informasi/' . $item->gambar,
+                'medium' => env('BASE_URL') . 'img/informasi/medium/' . $item->gambar,
+                'thumbnail' => env('BASE_URL') . 'img/informasi/thumbnail/' . $item->gambar
+            ]]);
         });
         return response([
             'success' => true,
@@ -84,7 +88,11 @@ class InformasiController extends Controller
     public function show($slug)
     {
         $informasi = Informasi::where('slug', $slug)->get()->first();
-        $data = collect($informasi)->merge(['gambar' => env('BASE_URL') . '/img/informasi/' . $informasi->gambar]);
+        $data = collect($informasi)->merge(['gambar' => [
+            'original' => env('BASE_URL') . 'img/informasi/' . $informasi->gambar,
+            'medium' => env('BASE_URL') . 'img/informasi/medium/' . $informasi->gambar,
+            'thumbnail' => env('BASE_URL') . 'img/informasi/thumbnail/' . $informasi->gambar
+        ]]);
         return response([
             'success' => true,
             'message' => 'Show Informasi',
