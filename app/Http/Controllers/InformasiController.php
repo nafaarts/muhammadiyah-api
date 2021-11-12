@@ -32,7 +32,7 @@ class InformasiController extends Controller
                     'medium' => env('BASE_URL') . 'img/informasi/medium/' . $item->gambar,
                     'thumbnail' => env('BASE_URL') . 'img/informasi/thumbnail/' . $item->gambar
                 ],
-                'category' => Kategori::findOrFail($item->kategori)
+                'kategori' => Kategori::findOrFail($item->kategori)
             ]);
         });
         return response([
@@ -98,7 +98,7 @@ class InformasiController extends Controller
                 'medium' => env('BASE_URL') . 'img/informasi/medium/' . $informasi->gambar,
                 'thumbnail' => env('BASE_URL') . 'img/informasi/thumbnail/' . $informasi->gambar
             ],
-            'category' => Kategori::findOrFail($informasi->kategori)
+            'kategori' => Kategori::findOrFail($informasi->kategori)
         ]);
         return response([
             'success' => true,
