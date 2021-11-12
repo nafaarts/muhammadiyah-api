@@ -115,12 +115,17 @@ class GalleryController extends Controller
 
         if ($request->hasFile('gambar')) {
             File::delete('img/gallery/' . $gallery->gambar);
+            File::delete('img/gallery/medium/' . $gallery->gambar);
+            File::delete('img/gallery/thumbnail/' . $gallery->gambar);
 
             $file = $request->file('gambar')->getClientOriginalName();
             $filename = pathinfo($file, PATHINFO_FILENAME);
             $extension = pathinfo($file, PATHINFO_EXTENSION);
             $name = Str::slug($filename) . '-' . time() . '.' . $extension;
-            $request->file('gambar')->move('img/gallery/', $name);
+            $path = 'img/gallery';
+            $request->file('gambar')->move($path, $name);
+            $this->resizeImage($path . $name, 150, $path . 'thumbnail/' . $name);
+            $this->resizeImage($path . $name, 400, $path . 'medium/' . $name);
         } else {
             $name = $gallery->gambar;
         }

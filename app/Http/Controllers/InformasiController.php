@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Informasi;
+use Gumlet\ImageResize;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
@@ -10,6 +11,13 @@ use Illuminate\Support\Str;
 
 class InformasiController extends Controller
 {
+    private function resizeImage($filename, $size, $output)
+    {
+        $image = new ImageResize($filename);
+        $image->resizeToWidth($size, true);
+        $image->save($output, IMAGETYPE_JPEG);
+    }
+
     public function index(Request $request)
     {
         $informasi = Informasi::latest()->get();
@@ -50,7 +58,10 @@ class InformasiController extends Controller
             $filename = pathinfo($file, PATHINFO_FILENAME);
             $extension = pathinfo($file, PATHINFO_EXTENSION);
             $name = Str::slug($filename) . '-' . time() . '.' . $extension;
-            $request->file('gambar')->move('img/', $name);
+            $path = 'img/informasi/';
+            $request->file('gambar')->move($path, $name);
+            $this->resizeImage($path . $name, 150, $path . 'thumbnail/' . $name);
+            $this->resizeImage($path . $name, 400, $path . 'medium/' . $name);
         }
 
         $informasi = Informasi::create([
@@ -108,8 +119,10 @@ class InformasiController extends Controller
             $filename = pathinfo($file, PATHINFO_FILENAME);
             $extension = pathinfo($file, PATHINFO_EXTENSION);
             $name = Str::slug($filename) . '-' . time() . '.' . $extension;
-
-            $request->file('gambar')->move('img/', $name);
+            $path = 'img/informasi/';
+            $request->file('gambar')->move($path, $name);
+            $this->resizeImage($path . $name, 150, $path . 'thumbnail/' . $name);
+            $this->resizeImage($path . $name, 400, $path . 'medium/' . $name);
         } else {
             $name = $informasi->gambar;
         }
@@ -134,6 +147,8 @@ class InformasiController extends Controller
     {
         $informasi = Informasi::findOrFail($id);
         File::delete('img/' . $informasi->gambar);
+        File::delete('img/thumbnail/' . $informasi->gambar);
+        File::delete('img/medium/' . $informasi->gambar);
 
         $informasi->delete();
         return response([
