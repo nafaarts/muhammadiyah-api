@@ -22,9 +22,11 @@ class InformasiController extends Controller
     public function index(Request $request)
     {
         $informasi = Informasi::latest()->get();
+
         if ($request->get('page')) {
-            $informasi = Informasi::latest()->paginate($request->get('limit'));
+            $informasi = Informasi::latest()->paginate(($request->get('limit')) ? $request->get('limit') : 6)->items();
         }
+
         $data = collect($informasi)->map(function ($item) {
             return collect($item)->merge([
                 'gambar' => [
@@ -35,6 +37,7 @@ class InformasiController extends Controller
                 'kategori' => Kategori::findOrFail($item->kategori)
             ]);
         });
+
         return response([
             'success' => true,
             'message' => 'Information list',
@@ -92,6 +95,9 @@ class InformasiController extends Controller
     public function show($slug)
     {
         $informasi = Informasi::where('slug', $slug)->get()->first();
+        $informasi->update([
+            'views' => $informasi->views + 1
+        ]);
         $data = collect($informasi)->merge([
             'gambar' => [
                 'original' => env('BASE_URL') . 'img/informasi/' . $informasi->gambar,
@@ -100,6 +106,17 @@ class InformasiController extends Controller
             ],
             'kategori' => Kategori::findOrFail($informasi->kategori)
         ]);
+
+        $data['latest'] = collect(Informasi::where('slug', '!=', $slug)->limit(3)->get())->map(function ($item) {
+            return collect($item)->merge([
+                'gambar' => [
+                    'original' => env('BASE_URL') . 'img/informasi/' . $item->gambar,
+                    'medium' => env('BASE_URL') . 'img/informasi/medium/' . $item->gambar,
+                    'thumbnail' => env('BASE_URL') . 'img/informasi/thumbnail/' . $item->gambar
+                ],
+                'kategori' => Kategori::findOrFail($item->kategori)
+            ]);
+        });
         return response([
             'success' => true,
             'message' => 'Show Informasi',
