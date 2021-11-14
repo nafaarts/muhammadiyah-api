@@ -41,7 +41,6 @@ class InformasiController extends Controller
         return response([
             'success' => true,
             'message' => 'Information list',
-            'count' => $informasi->count(),
             'data'   => $data
         ], 200);
     }
