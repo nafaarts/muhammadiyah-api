@@ -95,6 +95,9 @@ class InformasiController extends Controller
     public function show($slug)
     {
         $informasi = Informasi::where('slug', $slug)->get()->first();
+        if ($informasi == null) {
+            return response('Bad Request', 400);
+        }
         $informasi->update([
             'views' => $informasi->views + 1
         ]);
